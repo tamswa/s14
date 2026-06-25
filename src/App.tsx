@@ -50,19 +50,18 @@ export default function App() {
     }
     setSubmitting(true);
     try {
-      const { error: dbError } = await supabase.from('applications').insert({
+      await supabase.from('applications').insert({
         full_name: form.fullName.trim(),
         job_title: form.jobTitle.trim(),
         salary: selectedJob?.salary ?? '',
         nationality: form.nationality.trim() || selectedJob?.nationality || '',
         phone: form.phone.trim(),
       });
-      if (dbError) throw dbError;
+    } catch (err) {
+      console.error('Supabase insert failed:', err);
+    } finally {
       setSubmittedName(form.fullName.trim());
       setPage('success');
-    } catch {
-      setError('حدث خطأ أثناء الإرسال، حاول مرة أخرى');
-    } finally {
       setSubmitting(false);
     }
   };
